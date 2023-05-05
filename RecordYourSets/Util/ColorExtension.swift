@@ -6,8 +6,23 @@
 //
 
 import Foundation
+import SwiftUI
 
-struct UIConstants {
+extension Color {
     
-    static let 
+    public static var background: Color {
+        return Color("backgroundColor")
+    }
+    
+    public static var foreground: Color {
+        return Color("foregroundColor")
+    }
+    
+    public static var rowBackground: Color {
+        return Color("rowBackgroundColor")
+    }
+    
+    public static var textField: Color {
+        return Color("textFieldColor")
+    }
 }

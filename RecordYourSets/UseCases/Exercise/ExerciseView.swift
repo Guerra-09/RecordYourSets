@@ -8,13 +8,53 @@
 import SwiftUI
 
 struct ExerciseView: View {
+    
+    @ObservedObject var exerciseVM = ExerciseViewModel()
+    var folder: Folder
+    
+    @State var exerciseName = ""
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            
+            
+            if let exercises = folder.exercises?.allObjects as? [Exercise] {
+                List {
+                    ForEach(exercises) { ex in
+                        
+                        NavigationLink(destination: RecordView(exercise: ex) ) {
+                            Text(ex.exerciseName ?? "exercise not loading")
+                        }
+                        
+                    }
+                    .listRowBackground(Color.rowBackground)
+                }
+                .scrollContentBackground(.hidden)
+            }
+        
+            
+            
+            TextField("Exercise name", text: $exerciseName)
+                .frame(width: 250)
+                .background(Color.textField)
+            
+            Button {
+                
+                exerciseVM.addExerciseToFolder(folderToAdd: folder, exerciseName: exerciseName)
+                exerciseName = ""
+                
+            } label: {
+                Text("Add")
+            }
+
+            
+            
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.background)
+        
+        .navigationTitle(Text(folder.folderName ?? "Error"))
     }
 }
 
-struct ExerciseView_Previews: PreviewProvider {
-    static var previews: some View {
-        ExerciseView()
-    }
-}
+

@@ -9,9 +9,16 @@ import SwiftUI
 
 struct CreateRecordView: View {
     
+    // ViewModel instance
+    @ObservedObject var createRecordVM = CreateRecordViewModel()
+    
     // View States
     @State var weightsTextField = ""
     @State var repetitionsTextField = ""
+    @Environment(\.dismiss) var dismiss
+    
+    // Component from the outside
+    var exercise: Exercise
     
     var body: some View {
         
@@ -33,20 +40,26 @@ struct CreateRecordView: View {
             
             
             Button {
+                /// Error: After performance this function, this drop the view to ExerciseView instead of just reutnr RecordView...
+                createRecordVM.addSetToExercise(weight: Double(weightsTextField)!,reps:Int(repetitionsTextField)!,date: Date.now,exerciseToAdd: exercise)
+            
+                
+                dismiss()
                 
             } label: {
                 Text("Save")
+                    .foregroundColor(Color.foreground)
+                    .frame(maxWidth: 175, maxHeight: 40)
+                    .background(Color.rowBackground)
+                    .cornerRadius(15)
             }
 
             
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.background)
+        
+
     }
 }
 
-struct CreateRecord_Previews: PreviewProvider {
-    static var previews: some View {
-        CreateRecordView()
-    }
-}

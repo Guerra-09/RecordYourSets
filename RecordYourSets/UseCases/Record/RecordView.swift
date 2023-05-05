@@ -7,32 +7,75 @@
 
 import SwiftUI
 
-struct SetsView: View {
+struct RecordView: View {
     
     @Environment(\.dismiss) var dismiss
-    @ObservedObject var setsVM = SetsViewModel()
+    @ObservedObject var recordVM = RecordViewModel()
+    @State var showCreateRecord = false
     var exercise: Exercise
+    
+    @State var items: [[Record]] = []
+    
     
     var body: some View {
         VStack {
-            
+
             if let records = exercise.records?.allObjects as? [Record] {
                 List {
-                    ForEach(records) { sets in
-                        Text(sets.recordDate ?? Date.now, style: .date)
+                    ForEach(items, id: \.self) { ex in
+
+                        Section {
+                            ForEach(ex, id: \.self) { exo in
+                                HStack {
+
+                                    if let date = exo.recordDate {
+                                        Text("reps: \(exo.recordReps) date: \(date , format: .dateTime.day().month())")
+                                    } else {
+                                        Text("No data to show")
+                                    }
+
+
+                                    }
+                                }
+                        } header: {
+                            Text("\(ex.first!.recordDate ?? Date.now, format: .dateTime.day().month())")
+                                .foregroundColor(Color.foreground)
+                        }
+
+
                     }
+                }
+                .onAppear {
+                    items = recordVM.sortForDates(sets: records)
                 }
                 .scrollContentBackground(.hidden)
             }
-            
+
+
+
             Button {
-                setsVM.
+                showCreateRecord.toggle()
             } label: {
-                <#code#>
+                Text("New record!")
             }
+
+            
 
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.background)
+        
+        .onAppear {
+            
+            self.items = recordVM.sortForDates(sets: recordVM.returnRecord())
+        }
+        
+        .sheet(isPresented: $showCreateRecord) {
+                CreateRecordView(exercise: exercise)
+            
+        }
+        
+        .navigationTitle("Set View")
     }
+    
 }
